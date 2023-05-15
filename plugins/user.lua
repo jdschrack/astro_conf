@@ -44,5 +44,6 @@ return {
         ]]
             vim.g.gitblame_enabled = 0
         end
-    }
+    },
+    {"hrsh7th/cmp-cmdline", dependencies = {"hrsh7th/nvim-cmp"}, lazy = false}
 }

@@ -73,17 +73,35 @@ return {
     -- augroups/autocommands and custom filetypes also this just pure lua so
     -- anything that doesn't fit in the normal config locations above can go here
     polish = function()
-        -- Set up custom filetypes
-        -- vim.filetype.add {
-        --   extension = {
-        --     foo = "fooscript",
-        --   },
-        --   filename = {
-        --     ["Foofile"] = "fooscript",
-        --   },
-        --   pattern = {
-        --     ["~/%.config/foo/.*"] = "fooscript",
-        --   },
-        -- }
-    end,
+        -- configure dotnetdbg dap
+        local dap = require "dap"
+        dap.adapters.coreclr = {
+            type = "executable",
+            command = "/Users/jeremey.schrack/.local/share/netcoredbg",
+            args = {"--interpreter=vscode"}
+        }
+
+        dap.adapters.cs = {
+            type = "coreclr",
+            name = "launch - netcoredbg",
+            request = "launch",
+            program = function()
+                return vim.fn.input("Path to dll",
+                                    vim.fn.getcmd() .. "/bin/Debug", "file")
+            end
+        }
+
+        local cmp = require "cmp"
+
+        cmp.setup.cmdline({"/", "?"}, {
+            mapping = cmp.mapping.preset.cmdline(),
+            sources = {{name = "buffer"}}
+        })
+
+        cmp.setup.cmdline(":", {
+            mapping = cmp.mapping.preset.cmdline(),
+            sources = cmp.config
+                .sources({{name = "path"}}, {{name = "cmdline"}})
+        })
+    end
 }
